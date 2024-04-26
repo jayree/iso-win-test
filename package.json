@@ -1,0 +1,24 @@
+{
+  "name": "iso-win-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "isomorphic-git": "^1.25.7"
+  },
+  "devDependencies": {
+    "@salesforce/cli-plugins-testkit": "^5.2.3",
+    "@salesforce/dev-config": "^4.1.0",
+    "@types/chai": "^4.3.14",
+    "@types/mocha": "^10.0.6",
+    "c8": "^9.1.0",
+    "chai": "^5.1.0",
+    "mocha": "^10.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "test": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel"
+  }
+}
