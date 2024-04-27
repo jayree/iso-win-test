@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "isomorphic-git": "^1.25.7"
+    "isomorphic-git": "^1.25.7",
+    "patch-package": "^8.0.0"
   },
   "devDependencies": {
     "@salesforce/cli-plugins-testkit": "^5.2.3",
@@ -19,6 +20,7 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "test": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel"
+    "test": "c8 mocha \"**/*.nut.ts\" --slow 4500 --timeout 600000 --parallel",
+    "postinstall": "patch-package"
   }
 }
