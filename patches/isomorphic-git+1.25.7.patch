@@ -1,16 +1,7 @@
 diff --git a/node_modules/isomorphic-git/index.cjs b/node_modules/isomorphic-git/index.cjs
-index b7e8bcd..3f0f374 100644
+index b7e8bcd..9c35c7e 100644
 --- a/node_modules/isomorphic-git/index.cjs
 +++ b/node_modules/isomorphic-git/index.cjs
-@@ -918,7 +918,7 @@ function compareStats(entry, stats) {
-     e.ctimeSeconds !== s.ctimeSeconds ||
-     e.uid !== s.uid ||
-     e.gid !== s.gid ||
--    e.ino !== s.ino ||
-+    // e.ino !== s.ino ||
-     e.size !== s.size;
-   return staleness
- }
 @@ -4201,6 +4201,7 @@ class GitWalkerFs {
        ) {
          const stage = index.entriesMap.get(entry._fullpath);

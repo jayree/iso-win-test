@@ -29,4 +29,13 @@ describe("result testing with NUTS", () => {
     });
     expect(status.slice(1)).to.be.deep.equal([1, 1, 1]);
   });
+
+  it("should return [1,1,1]", async () => {
+    const [status] = await git.statusMatrix({
+      fs,
+      dir: session.project.dir,
+      filter: (f) => f === "package.json",
+    });
+    expect(status.slice(1)).to.be.deep.equal([1, 1, 1]);
+  });
 });
