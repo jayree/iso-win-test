@@ -1,8 +1,16 @@
 diff --git a/node_modules/isomorphic-git/index.cjs b/node_modules/isomorphic-git/index.cjs
-index b7e8bcd..c882dd8 100644
+index b7e8bcd..9c35c7e 100644
 --- a/node_modules/isomorphic-git/index.cjs
 +++ b/node_modules/isomorphic-git/index.cjs
-@@ -4232,6 +4232,7 @@ class GitWalkerFs {
+@@ -4201,6 +4201,7 @@ class GitWalkerFs {
+       ) {
+         const stage = index.entriesMap.get(entry._fullpath);
+         const stats = await entry.stat();
++        console.log({stage,stats}) // JRI
+         if (!stage || compareStats(stats, stage)) {
+           const content = await entry.content();
+           if (content === undefined) {
+@@ -4232,6 +4233,7 @@ class GitWalkerFs {
        });
        entry._oid = oid;
      }
@@ -10,7 +18,7 @@ index b7e8bcd..c882dd8 100644
      return entry._oid
    }
  }
-@@ -14092,6 +14093,7 @@ async function statusMatrix({
+@@ -14092,6 +14094,7 @@ async function statusMatrix({
          }
          const entry = [undefined, headOid, workdirOid, stageOid];
          const result = entry.map(value => entry.indexOf(value));
