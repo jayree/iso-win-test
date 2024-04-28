@@ -1,14 +1,100 @@
 diff --git a/node_modules/isomorphic-git/index.cjs b/node_modules/isomorphic-git/index.cjs
-index b7e8bcd..76c8557 100644
+index b7e8bcd..0636a89 100644
 --- a/node_modules/isomorphic-git/index.cjs
 +++ b/node_modules/isomorphic-git/index.cjs
-@@ -4163,6 +4163,9 @@ class GitWalkerFs {
+@@ -945,6 +945,9 @@ async function updateCachedIndexFile(fs, filepath, cache) {
+   const index = await GitIndex.from(rawIndexFile);
+   // cache the GitIndex object so we don't need to re-read it every time.
+   cache.map.set(filepath, index);
++  if (process.platform === "win32") {
++    stat.ino = 0;
++  }
+   // Save the stat data for the index so we know whether the cached file is stale (modified by an outside process).
+   cache.stats.set(filepath, stat);
+ }
+@@ -956,6 +959,9 @@ async function isIndexStale(fs, filepath, cache) {
+   const currStats = await fs.lstat(filepath);
+   if (savedStats === null) return false
+   if (currStats === null) return false
++  if (process.platform === "win32") {
++    currStats.ino = 0;
++  }
+   return compareStats(savedStats, currStats)
+ }
+ 
+@@ -996,8 +1002,12 @@ class GitIndexManager {
+         // let fileLock = await Lock(filepath)
+         const buffer = await index.toObject();
+         await fs.write(filepath, buffer);
++        let stat = await fs.lstat(filepath)
++        if (process.platform === "win32") {
++          stat.ino = 0;
++        }
+         // Update cached stat value
+-        cache[IndexCache].stats.set(filepath, await fs.lstat(filepath));
++        cache[IndexCache].stats.set(filepath, stat);
+         index._dirty = false;
        }
-       entry._type = type;
-       stat = normalizeStats(stat);
+     });
+@@ -4161,6 +4171,9 @@ class GitWalkerFs {
+       if (type === 'blob' && !stat.isFile() && !stat.isSymbolicLink()) {
+         type = 'special';
+       }
 +      if (process.platform === "win32") {
 +        stat.ino = 0;
 +      }
+       entry._type = type;
+       stat = normalizeStats(stat);
        entry._mode = stat.mode;
-       // workaround for a BrowserFS edge case
-       if (stat.size === -1 && entry._actualSize) {
+@@ -5088,6 +5101,9 @@ async function addToIndex({
+         : await fs.read(join(dir, currentFilepath));
+       if (object === null) throw new NotFoundError(currentFilepath)
+       const oid = await _writeObject({ fs, gitdir, type: 'blob', object });
++      if (process.platform === "win32") {
++        stats.ino = 0;
++      }
+       index.insert({ filepath: currentFilepath, stats, oid });
+     }
+   });
+@@ -6249,6 +6265,9 @@ async function _checkout({
+               }
+ 
+               const stats = await fs.lstat(filepath);
++              if (process.platform === "win32") {
++                stats.ino = 0;
++              }
+               // We can't trust the executable bit returned by lstat on Windows,
+               // so we need to preserve this value from the TREE.
+               // TODO: Figure out how git handles this internally.
+@@ -13540,6 +13559,9 @@ async function resetIndex({
+     await GitIndexManager.acquire({ fs, gitdir, cache }, async function(index) {
+       index.delete({ filepath });
+       if (oid) {
++        if (process.platform === "win32") {
++          stats.ino = 0;
++        }
+         index.insert({ filepath, stats, oid });
+       }
+     });
+@@ -13749,6 +13771,10 @@ async function status({
+     const I = indexEntry !== null; // index
+     const W = stats !== null; // working dir
+ 
++    if (process.platform === "win32") {
++      stats.ino = 0;
++    }
++
+     const getWorkdirOid = async () => {
+       if (I && !compareStats(indexEntry, stats)) {
+         return indexEntry.oid
+@@ -14269,6 +14295,10 @@ async function updateIndex({
+       if (fileStats.isDirectory()) {
+         throw new InvalidFilepathError('directory')
+       }
++
++      if (process.platform === "win32") {
++        fileStats.ino = 0;
++      }
+     }
+ 
+     return await GitIndexManager.acquire({ fs, gitdir, cache }, async function(
